@@ -12,9 +12,15 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 public class ApiExceptionHandler {
 
     @ExceptionHandler(InvalidRequestException.class)
-    @ResponseStatus(HttpStatus.NOT_FOUND)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponse handleInvalidRequest(InvalidRequestException invalidRequestException) {
         return new ErrorResponse(invalidRequestException.getMessage());
+    }
+
+    @ExceptionHandler(PatientNotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ErrorResponse handlePatientNotFound(PatientNotFoundException patientNotFoundException) {
+        return new ErrorResponse(patientNotFoundException.getMessage());
     }
 
     public record ErrorResponse(String message) {}

@@ -40,7 +40,6 @@ public class PatientRepository {
      *
      */
     public Optional<PatientEntity> fetchOne(String patientId) {
-        if (!StringUtils.hasText(patientId)) throw new InvalidRequestException();
         return Optional.ofNullable(patientDB.get(patientId));
     }
 

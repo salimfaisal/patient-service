@@ -8,18 +8,12 @@ import jakarta.validation.constraints.NotNull;
 import java.time.LocalDate;
 import java.util.UUID;
 
-public record PatientDTO(
-        @NotBlank String id,
+public record NewPatientDTO(
         @NotBlank String firstName,
         String lastName,
         @NotNull LocalDate dateOfBirth,
         @NotBlank @Email String email
         ) {
-
-        public static PatientDTO from(PatientEntity patientEntity) {
-                return new PatientDTO(patientEntity.getId(), patientEntity.getFirstName(),
-                        patientEntity.getLastName(), patientEntity.getDOB(), patientEntity.getEmail());
-        }
 
         public static PatientEntity toPatientEntity(NewPatientDTO patientDTO) {
                 return new PatientEntity(UUID.randomUUID().toString(), patientDTO.firstName(), patientDTO.lastName(),

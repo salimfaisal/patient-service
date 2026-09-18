@@ -1,5 +1,6 @@
 package com.faisal.patient.controller;
 
+import com.faisal.patient.dto.NewPatientDTO;
 import com.faisal.patient.dto.PatientDTO;
 import com.faisal.patient.service.PatientService;
 import jakarta.validation.Valid;
@@ -30,9 +31,8 @@ public class PatientController {
     }
 
     @PostMapping({"","/"})
-    @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<@Valid PatientDTO> createPatient(@Valid @RequestBody PatientDTO patientDTO) {
-        patientService.createPatient(patientDTO);
+    public ResponseEntity<PatientDTO> createPatient(@Valid @RequestBody NewPatientDTO newPatientDTO) {
+        PatientDTO patientDTO = patientService.createPatient(newPatientDTO);
         return ResponseEntity.created(URI.create("/patients/"+patientDTO.id())).body(patientDTO);
     }
 }
