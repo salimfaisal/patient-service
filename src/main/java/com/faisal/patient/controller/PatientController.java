@@ -2,6 +2,7 @@ package com.faisal.patient.controller;
 
 import com.faisal.patient.dto.NewPatientDTO;
 import com.faisal.patient.dto.PatientDTO;
+import com.faisal.patient.dto.UpdatePatientDTO;
 import com.faisal.patient.service.PatientService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -34,5 +35,13 @@ public class PatientController {
     public ResponseEntity<PatientDTO> createPatient(@Valid @RequestBody NewPatientDTO newPatientDTO) {
         PatientDTO patientDTO = patientService.createPatient(newPatientDTO);
         return ResponseEntity.created(URI.create("/patients/"+patientDTO.id())).body(patientDTO);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<PatientDTO> replacePatient(
+            @PathVariable String id,
+            @Valid @RequestBody UpdatePatientDTO request) {
+        PatientDTO patientDTO =  patientService.replace(id, request);
+        return ResponseEntity.created(URI.create("/patients/"+id)).body(patientDTO);
     }
 }
