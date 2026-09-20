@@ -23,5 +23,11 @@ public class ApiExceptionHandler {
         return new ErrorResponse(patientNotFoundException.getMessage());
     }
 
+    @ExceptionHandler(DuplicateEmailException.class)
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public ErrorResponse handleDuplicateEmail(DuplicateEmailException exception) {
+        return new ErrorResponse(exception.getMessage());
+    }
+
     public record ErrorResponse(String message) {}
 }

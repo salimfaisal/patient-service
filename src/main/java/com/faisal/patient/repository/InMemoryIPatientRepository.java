@@ -1,8 +1,6 @@
 package com.faisal.patient.repository;
 
 import com.faisal.patient.entity.PatientEntity;
-import org.springframework.context.annotation.Primary;
-import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
 import java.util.Collection;
@@ -11,9 +9,9 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
-@Repository
-@Primary
-public class InMemoryPatientRepository implements PatientRepository {
+//@Repository
+//@Primary
+public class InMemoryIPatientRepository implements IPatientRepository {
 
 
     //

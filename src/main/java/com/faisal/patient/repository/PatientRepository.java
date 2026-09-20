@@ -1,23 +1,48 @@
 package com.faisal.patient.repository;
 
-import com.faisal.patient.dto.PatientDTO;
 import com.faisal.patient.entity.PatientEntity;
-import com.faisal.patient.exception.InvalidRequestException;
-import jakarta.validation.Valid;
+import com.faisal.patient.exception.DuplicateEmailException;
+import com.faisal.patient.exception.PatientNotFoundException;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
-import org.springframework.util.StringUtils;
 
-import java.time.LocalDate;
-import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.Collection;
+import java.util.Optional;
 
-public interface PatientRepository {
+@Repository
+@RequiredArgsConstructor
+public class PatientRepository {
 
-    public Collection<PatientEntity> fetchAll();
+    private final PatientJPARepository patientJPARepository;
 
-    public Optional<PatientEntity> fetchOne(String patientId);
+    public Collection<PatientEntity> fetchAll() {
+        return patientJPARepository.findAll();
+    }
 
-    public void insert(PatientEntity patientEntity);
+    public Optional<PatientEntity> fetchOne(String patientId) {
+        return patientJPARepository.findById(patientId);
+    }
 
-    public Optional<PatientEntity> update(String patientId, PatientEntity patientEntity);
+    public PatientEntity insert(PatientEntity patientEntity) {
+        if (patientJPARepository.existsByEmailIgnoreCase(patientEntity.getEmail())) {
+            throw new DuplicateEmailException(patientEntity.getEmail());
+        }
+        PatientEntity patient = new PatientEntity();
+        patient.setFirstName(patientEntity.getFirstName());
+        patient.setLastName(patientEntity.getLastName());
+        patient.setEmail(patientEntity.getEmail());
+        patient.setDOB(patientEntity.getDOB());
+
+        return patientJPARepository.save(patient);
+    }
+
+    public Optional<PatientEntity> update(String patientId, PatientEntity patientEntity) {
+        PatientEntity patient = patientJPARepository.findById(patientId)
+                .orElseThrow(() -> new PatientNotFoundException(patientId));
+        patient.setFirstName(patientEntity.getFirstName());
+        patient.setLastName(patientEntity.getLastName());
+        patient.setEmail(patientEntity.getEmail());
+        patient.setDOB(patientEntity.getDOB());
+        return Optional.of(patientJPARepository.save(patient));
+    }
 }
