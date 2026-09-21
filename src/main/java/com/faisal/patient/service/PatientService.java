@@ -5,6 +5,8 @@ import com.faisal.patient.dto.NewPatientDTO;
 import com.faisal.patient.dto.PatientDTO;
 import com.faisal.patient.dto.UpdatePatientDTO;
 import com.faisal.patient.entity.PatientEntity;
+import com.faisal.patient.event.PatientCreatedEvent;
+import com.faisal.patient.event.PatientEventPublisher;
 import com.faisal.patient.exception.InvalidRequestException;
 import com.faisal.patient.exception.PatientNotFoundException;
 import com.faisal.patient.repository.IPatientRepository;
@@ -14,6 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
+import java.time.Instant;
 import java.util.*;
 
 @Service
@@ -21,6 +24,7 @@ import java.util.*;
 public class PatientService {
 
     private final PatientRepository patientRepository;
+    private final PatientEventPublisher patientEventPublisher;
 
     @Transactional(readOnly = true)
     public Collection<PatientDTO> getPatients() {
@@ -40,6 +44,10 @@ public class PatientService {
     public PatientDTO createPatient(NewPatientDTO newPatientDTO) {
         PatientEntity patientEntity = ModelConverter.toPatientEntity(newPatientDTO);
         PatientEntity savedEntity = patientRepository.insert(patientEntity);
+        //
+        PatientCreatedEvent patientCreatedEvent = new PatientCreatedEvent(savedEntity.getId(), savedEntity.getEmail(), Instant.now());
+        patientEventPublisher.publish(patientCreatedEvent);
+        //
         return ModelConverter.from(savedEntity);
     }
 
