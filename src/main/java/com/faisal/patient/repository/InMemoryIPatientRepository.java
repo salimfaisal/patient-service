@@ -53,7 +53,7 @@ public class InMemoryIPatientRepository implements IPatientRepository {
             PatientEntity patient = record.get();
             patient.setFirstName(patientEntity.getFirstName());
             patient.setLastName(patientEntity.getLastName());
-            patient.setDOB(patientEntity.getDOB());
+            patient.setDateOfBirth(patientEntity.getDateOfBirth());
             patient.setEmail(patientEntity.getEmail());
         }
         return record;

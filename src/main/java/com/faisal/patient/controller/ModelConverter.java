@@ -21,7 +21,7 @@ public class ModelConverter {
 
     public static PatientDTO from(PatientEntity patientEntity) {
         return new PatientDTO(patientEntity.getId(), patientEntity.getFirstName(),
-                patientEntity.getLastName(), patientEntity.getDOB(), patientEntity.getEmail());
+                patientEntity.getLastName(), patientEntity.getDateOfBirth(), patientEntity.getEmail());
     }
 
 }

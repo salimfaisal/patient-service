@@ -8,6 +8,19 @@ spring:
     password: ${DB_PASSWORD}
 
   jpa:
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
     hibernate:
-      ddl-auto: update
+      ddl-auto: validate
     open-in-view: false
+
+  logging:
+    level:
+      org.hibernate.orm.jdbc.bind: trace
+      org.flywaydb: DEBUG
+      org.springframework.boot.autoconfigure.flyway: DEBUG
+
+  flyway:
+    enabled: true

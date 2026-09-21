@@ -31,7 +31,7 @@ public class PatientRepository {
         patient.setFirstName(patientEntity.getFirstName());
         patient.setLastName(patientEntity.getLastName());
         patient.setEmail(patientEntity.getEmail());
-        patient.setDOB(patientEntity.getDOB());
+        patient.setDateOfBirth(patientEntity.getDateOfBirth());
 
         return patientJPARepository.save(patient);
     }
@@ -42,7 +42,7 @@ public class PatientRepository {
         patient.setFirstName(patientEntity.getFirstName());
         patient.setLastName(patientEntity.getLastName());
         patient.setEmail(patientEntity.getEmail());
-        patient.setDOB(patientEntity.getDOB());
+        patient.setDateOfBirth(patientEntity.getDateOfBirth());
         return Optional.of(patientJPARepository.save(patient));
     }
 }

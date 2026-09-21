@@ -26,9 +26,11 @@ public class PatientEntity {
     private String firstName;
     private String lastName;
     @NotNull
-    private LocalDate dOB;
+    private LocalDate dateOfBirth;
     @NotBlank
-    @Email private String email;
+    @Email
+    @Column(nullable = false, unique = true)
+    private String email;
 
 
 }
