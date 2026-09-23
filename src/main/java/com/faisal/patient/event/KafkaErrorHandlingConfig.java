@@ -14,7 +14,7 @@ public class KafkaErrorHandlingConfig {
 
     @Bean
     CommonErrorHandler kafkaErrorHandler(
-            KafkaTemplate<String, PatientCreatedEvent> kafkaTemplate) {
+            KafkaTemplate<String, String> kafkaTemplate) {
 
         DeadLetterPublishingRecoverer recoverer =
                 new DeadLetterPublishingRecoverer(
@@ -24,7 +24,13 @@ public class KafkaErrorHandlingConfig {
                                         record.topic() + ".DLT",
                                         record.partition()));
 
+
         // 1-second delay, 2 retries = 3 processing attempts total
-        return new DefaultErrorHandler(recoverer, new FixedBackOff(1_000L, 2L));
+        DefaultErrorHandler errorHandler = new DefaultErrorHandler(recoverer, new FixedBackOff(1_000L, 2L));
+
+        // Invalid JSON will not become valid on retry.
+        errorHandler.addNotRetryableExceptions(IllegalArgumentException.class);
+
+        return errorHandler;
     }
 }

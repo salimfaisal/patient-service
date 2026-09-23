@@ -5,12 +5,14 @@ import com.faisal.patient.dto.NewPatientDTO;
 import com.faisal.patient.dto.PatientDTO;
 import com.faisal.patient.dto.UpdatePatientDTO;
 import com.faisal.patient.entity.PatientEntity;
-import com.faisal.patient.event.PatientCreatedEvent;
-import com.faisal.patient.event.PatientEventPublisher;
 import com.faisal.patient.exception.InvalidRequestException;
 import com.faisal.patient.exception.PatientNotFoundException;
-import com.faisal.patient.repository.IPatientRepository;
+import com.faisal.patient.outbox.OutboxEventEntity;
+import com.faisal.patient.outbox.OutboxEventJPARepository;
+import com.faisal.patient.outbox.PatientCreatedPayload;
 import com.faisal.patient.repository.PatientRepository;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,7 +26,9 @@ import java.util.*;
 public class PatientService {
 
     private final PatientRepository patientRepository;
-    private final PatientEventPublisher patientEventPublisher;
+    //private final PatientEventPublisher patientEventPublisher;
+    private final OutboxEventJPARepository outboxEventRepository;
+    private final ObjectMapper outboxObjectMapper;
 
     @Transactional(readOnly = true)
     public Collection<PatientDTO> getPatients() {
@@ -45,9 +49,20 @@ public class PatientService {
         PatientEntity patientEntity = ModelConverter.toPatientEntity(newPatientDTO);
         PatientEntity savedEntity = patientRepository.insert(patientEntity);
         //
-        PatientCreatedEvent patientCreatedEvent = new PatientCreatedEvent(savedEntity.getId(), savedEntity.getEmail(), Instant.now());
-        patientEventPublisher.publish(patientCreatedEvent);
+        // PatientCreatedEvent patientCreatedEvent = new PatientCreatedEvent(savedEntity.getId(), savedEntity.getEmail(), Instant.now());
+        // patientEventPublisher.publish(patientCreatedEvent);
         //
+        // Outbox
+        String payload;
+        try {
+            PatientCreatedPayload patientCreatedPayload = PatientCreatedPayload.from(savedEntity);
+            payload = outboxObjectMapper.writeValueAsString(patientCreatedPayload);
+        } catch (JsonProcessingException exception) {
+            throw new IllegalStateException("Could not create outbox payload", exception);
+        }
+        outboxEventRepository.save(OutboxEventEntity.pending("Patient",
+                savedEntity.getId(), "PatientCreated", payload));
+
         return ModelConverter.from(savedEntity);
     }
 
