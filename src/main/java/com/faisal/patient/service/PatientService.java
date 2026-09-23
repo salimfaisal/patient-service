@@ -14,11 +14,12 @@ import com.faisal.patient.repository.PatientRepository;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
-import java.time.Instant;
 import java.util.*;
 
 @Service
@@ -37,6 +38,7 @@ public class PatientService {
                 .toList();
     }
 
+    @Cacheable(cacheNames = "patients", key = "#patientId")
     @Transactional(readOnly = true)
     public PatientDTO getPatient(String patientId) {
         if (!StringUtils.hasText(patientId)) throw new InvalidRequestException();
@@ -44,6 +46,7 @@ public class PatientService {
         return pOpt.map(ModelConverter::from).orElseThrow(()-> new PatientNotFoundException(patientId));
     }
 
+    @CachePut(cacheNames = "patients", key = "#result.id()")
     @Transactional
     public PatientDTO createPatient(NewPatientDTO newPatientDTO) {
         PatientEntity patientEntity = ModelConverter.toPatientEntity(newPatientDTO);
@@ -66,6 +69,7 @@ public class PatientService {
         return ModelConverter.from(savedEntity);
     }
 
+    @CachePut(cacheNames = "patients", key = "#patientId")
     @Transactional
     public PatientDTO replace(String patientId, UpdatePatientDTO updatePatientDTO) {
         PatientEntity patientEntity = ModelConverter.toPatientEntity(updatePatientDTO);
