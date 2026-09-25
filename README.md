@@ -27,3 +27,7 @@ A Spring boot rest api for patient
     -e SPRING_KAFKA_BOOTSTRAP_SERVERS=host.docker.internal:9092 \
     -e SPRING_DATA_REDIS_HOST=host.docker.internal \
     patient-service:local
+
+
+// using compose
+- docker compose up --build

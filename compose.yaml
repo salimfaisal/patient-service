@@ -1,0 +1,16 @@
+services:
+  patient-service:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: patient-service:local
+    ports:
+      - "8080:8080"
+
+    env_file:
+      - .dockerenv.local
+
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://host.docker.internal:5432/patientdb
+      SPRING_KAFKA_BOOTSTRAP_SERVERS: host.docker.internal:9092
+      SPRING_DATA_REDIS_HOST: host.docker.internal
