@@ -1,4 +1,5 @@
 .env.local
+.dockerenv.local
 HELP.md
 target/
 .mvn/wrapper/maven-wrapper.jar
