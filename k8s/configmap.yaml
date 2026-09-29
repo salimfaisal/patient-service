@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: patient-service-config
+  namespace: patient
+data:
+  SPRING_DATASOURCE_URL: jdbc:postgresql://host.docker.internal:5432/patientdb
+  SPRING_KAFKA_BOOTSTRAP_SERVERS: host.docker.internal:9092
+  SPRING_DATA_REDIS_HOST: host.docker.internal
+  SPRING_DATA_REDIS_PORT: "6379"

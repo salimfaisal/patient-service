@@ -31,3 +31,7 @@ A Spring boot rest api for patient
 
 // using compose
 - docker compose up --build
+
+// using kube
+- docker build -t patient-service:local .
+- ...
