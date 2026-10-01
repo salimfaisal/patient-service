@@ -5,6 +5,12 @@ metadata:
   namespace: patient
 spec:
   replicas: 2
+  minReadySeconds: 10
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 0
+      maxSurge: 1
   selector:
     matchLabels:
       app: patient-service
@@ -15,7 +21,7 @@ spec:
     spec:
       containers:
         - name: patient-service
-          image: patient-service:local
+          image: patient-service:0.2.0
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 8080
@@ -28,14 +34,14 @@ spec:
             httpGet:
               path: /actuator/health
               port: 8080
-            initialDelaySeconds: 20
-            periodSeconds: 10
+            initialDelaySeconds: 15
+            periodSeconds: 5
           livenessProbe:
             httpGet:
               path: /actuator/health
               port: 8080
             initialDelaySeconds: 30
-            periodSeconds: 20
+            periodSeconds: 10
           resources:
             requests:
               cpu: 250m

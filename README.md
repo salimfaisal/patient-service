@@ -33,5 +33,6 @@ A Spring boot rest api for patient
 - docker compose up --build
 
 // using kube
-- docker build -t patient-service:local .
+- docker save patient-service:local | colima ssh -- sudo k3s ctr images import -
 - ...
+- kubectl port-forward service/patient-service 8080:80 -n patient
