@@ -21,10 +21,16 @@ spec:
     spec:
       containers:
         - name: patient-service
-          image: patient-service:0.2.0
+          # deploy-k8s.ps1 replaces this local default with the current Git SHA tag.
+          image: patient-service:dev
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 8080
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 10001
+            runAsGroup: 10001
+            allowPrivilegeEscalation: false
           envFrom:
             - configMapRef:
                 name: patient-service-config
@@ -32,13 +38,13 @@ spec:
                 name: patient-db
           readinessProbe:
             httpGet:
-              path: /actuator/health
+              path: /actuator/health/readiness
               port: 8080
             initialDelaySeconds: 15
             periodSeconds: 5
           livenessProbe:
             httpGet:
-              path: /actuator/health
+              path: /actuator/health/liveness
               port: 8080
             initialDelaySeconds: 30
             periodSeconds: 10
@@ -49,4 +55,3 @@ spec:
             limits:
               cpu: "1"
               memory: 1Gi
-

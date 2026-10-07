@@ -4,7 +4,7 @@ metadata:
   name: patient-service-config
   namespace: patient
 data:
-  SPRING_DATASOURCE_URL: jdbc:postgresql://host.docker.internal:5432/patientdb
-  SPRING_KAFKA_BOOTSTRAP_SERVERS: host.docker.internal:9092
-  SPRING_DATA_REDIS_HOST: host.docker.internal
+  SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/patientdb
+  SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+  SPRING_DATA_REDIS_HOST: redis
   SPRING_DATA_REDIS_PORT: "6379"

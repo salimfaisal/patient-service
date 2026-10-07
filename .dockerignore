@@ -2,5 +2,6 @@ target/
 .git/
 .idea/
 .env.local
+.env
 .dockerenv.local
 *.log

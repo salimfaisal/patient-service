@@ -4,8 +4,8 @@ on:
   workflow_dispatch:
     inputs:
       image_tag:
-        description: Image version to publish, for example 0.2.0
-        required: true
+        description: Optional additional image version to publish, for example 0.2.0
+        required: false
         type: string
 
 permissions:
@@ -42,4 +42,8 @@ jobs:
           context: .
           push: true
           platforms: linux/amd64
-          tags: ${{ steps.ecr.outputs.registry }}/${{ env.ECR_REPOSITORY }}:${{ inputs.image_tag }}
+          tags: |
+            ${{ steps.ecr.outputs.registry }}/${{ env.ECR_REPOSITORY }}:${{ github.sha }}
+            ${{ inputs.image_tag && format('{0}/{1}:{2}', steps.ecr.outputs.registry, env.ECR_REPOSITORY, inputs.image_tag) || '' }}
+          labels: |
+            org.opencontainers.image.revision=${{ github.sha }}

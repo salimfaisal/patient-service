@@ -23,11 +23,11 @@ FROM eclipse-temurin:25-jre-jammy
 WORKDIR /app
 # Creates a non-root Linux user named spring.
 # Running applications as root inside containers is unsafe; this reduces the blast radius if the app is compromised.
-RUN useradd --system --create-home spring
+RUN useradd --system --uid 10001 --user-group --create-home spring
 # Copies only the built JAR from the earlier stage named build.
 COPY --from=build /workspace/target/patient-0.0.1-SNAPSHOT.jar app.jar
 # All following commands, including the app process, run as the non-root spring user.
-USER spring
+USER 10001:10001
 # Documents that the container listens on port 8080
 EXPOSE 8080
 # The command Docker runs when the container starts:
