@@ -1,6 +1,6 @@
 # Build stage
-# Uses an image containing Ubuntu Jammy plus Java 21’s JDK.
-FROM eclipse-temurin:21-jdk-jammy AS build
+# Uses an image containing Ubuntu Jammy plus Java 25’s JDK.
+FROM eclipse-temurin:25-jdk-jammy AS build
 LABEL authors="fasalim"
 # Sets /workspace as the current directory inside the build container. Future commands run here.
 WORKDIR /workspace
@@ -19,7 +19,7 @@ RUN ./mvnw -B clean package -DskipTests
 
 # Runtime stage
 # Starts a new, smaller image containing only the Java JRE, not Maven or the Java compiler.
-FROM eclipse-temurin:21-jre-jammy
+FROM eclipse-temurin:25-jre-jammy
 WORKDIR /app
 # Creates a non-root Linux user named spring.
 # Running applications as root inside containers is unsafe; this reduces the blast radius if the app is compromised.
