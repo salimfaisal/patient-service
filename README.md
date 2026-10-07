@@ -48,6 +48,15 @@ Run the deployment commands from the repository root in PowerShell:
 
 The script is a commented command checklist. Before running it, replace the `DB_PASSWORD` placeholder with a local development password and commit or stash all changes so the Git SHA identifies the exact source being built. It builds `patient-service:<full-git-sha>`, deploys that image to the currently selected `kubectl` context, creates or updates the database Secret, applies the Kubernetes manifests, and waits for each workload rollout. For a remote cluster, set `$imageRepository` in the script to the registry-qualified repository, log in to that registry, and uncomment `docker push $image` before deployment.
 
-The GitHub Actions workflow also publishes each manually triggered build to ECR with the triggering commit SHA as its image tag. An optional version input can publish a second tag for the same image.
+The GitHub Actions workflow publishes each build to ECR with the triggering commit SHA as its image tag. Pushing a version tag matching `v*` (for example, `v1.0.0`) also publishes the same image with that version tag. A manually triggered build can use the optional version input to add another tag.
+
+To publish a release from the current commit:
+
+```powershell
+git tag v1.0.0
+git push origin v1.0.0
+```
+
+The tag must point to a commit containing the updated workflow. The ECR workflow then publishes both the full commit SHA tag and `v1.0.0`.
 
 The final command keeps port-forwarding active in that terminal. Check `http://localhost:8081/actuator/health` in a browser; press `Ctrl+C` to stop forwarding. Delete the `patient` namespace to remove the deployment and its development dependencies; this also deletes the database Secret and its persistent volume claim.
