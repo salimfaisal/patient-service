@@ -4,7 +4,7 @@
 A Spring boot rest api for patient
 
 // // Tehcnology
-- Java 21
+- Java 25
 - Spring Boot
 - Maven
 - In-mem repo
