@@ -27,10 +27,10 @@ docker build -t $image .
 # Create the namespace before adding namespaced resources.
 kubectl apply -f k8s/namespace.yaml
 
-# Set these to the same database credentials used by the application.
-# Use a local development password here; do not commit real credentials.
-$env:DB_USERNAME = "patientapp"
-$env:DB_PASSWORD = "<replace-with-a-local-development-password>"
+# Load the same local development credentials used by Compose.
+$localCredentials = Get-Content .env -Raw | ConvertFrom-StringData
+$env:DB_USERNAME = $localCredentials["DB_USERNAME"]
+$env:DB_PASSWORD = $localCredentials["DB_PASSWORD"]
 
 # Create or update the Kubernetes Secret without writing credentials to a manifest.
 kubectl create secret generic patient-db --namespace patient `
