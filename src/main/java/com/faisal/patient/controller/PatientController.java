@@ -1,8 +1,10 @@
 package com.faisal.patient.controller;
 
+import com.faisal.patient.dto.AppointmentDTO;
 import com.faisal.patient.dto.NewPatientDTO;
 import com.faisal.patient.dto.PatientDTO;
 import com.faisal.patient.dto.UpdatePatientDTO;
+import com.faisal.patient.service.AppointmentQueryService;
 import com.faisal.patient.service.PatientService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -12,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
 import java.util.Collection;
+import java.util.List;
 
 @RestController
 @RequestMapping("/patients")
@@ -19,6 +22,8 @@ import java.util.Collection;
 public class PatientController {
 
     private final PatientService patientService;
+    private final AppointmentQueryService appointmentQueryService;
+
 
     @GetMapping({"","/"})
     public Collection<PatientDTO> listPatients(
@@ -44,4 +49,12 @@ public class PatientController {
         PatientDTO patientDTO =  patientService.replace(id, request);
         return ResponseEntity.created(URI.create("/patients/"+id)).body(patientDTO);
     }
+
+
+    @GetMapping("/{patientId}/appointments")
+    public List<AppointmentDTO> getAppointments(
+            @PathVariable String patientId) {
+        return appointmentQueryService.getAppointmentsForPatient(patientId);
+    }
+
 }

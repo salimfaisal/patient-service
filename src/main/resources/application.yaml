@@ -2,6 +2,28 @@ app:
   outbox:
     poll-interval-ms: 5000
 
+appointment-service:
+  base-url: ${APPOINTMENT_SERVICE_URL:http://localhost:8081}
+
+resilience4j:
+  retry:
+    instances:
+      appointmentRead:
+        max-attempts: 3
+        wait-duration: 200ms
+        enable-exponential-backoff: true
+        exponential-backoff-multiplier: 2
+        retry-exceptions:
+          - org.springframework.web.client.ResourceAccessException
+  circuitbreaker:
+    instances:
+      appointmentRead:
+        sliding-window-type: COUNT_BASED
+        sliding-window-size: 10
+        minimum-number-of-calls: 5
+        failure-rate-threshold: 50
+        wait-duration-in-open-state: 10s
+
 info:
   app:
     name: Patient Service
@@ -68,5 +90,4 @@ spring:
 
   lifecycle:
     timeout-per-shutdown-phase: 30s
-
 

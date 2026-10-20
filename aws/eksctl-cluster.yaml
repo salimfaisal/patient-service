@@ -1,0 +1,24 @@
+apiVersion: eksctl.io/v1alpha5
+kind: ClusterConfig
+
+metadata:
+  name: patient-learning
+  region: us-east-2
+
+vpc:
+  clusterEndpoints:
+    publicAccess: true
+    privateAccess: true
+  publicAccessCIDRs:
+    - 135.23.176.179/32
+  nat:
+    gateway: Disabled
+
+managedNodeGroups:
+  - name: learning
+    instanceType: t3.medium
+    desiredCapacity: 1
+    minSize: 1
+    maxSize: 1
+    volumeSize: 20
+    privateNetworking: false
