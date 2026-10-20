@@ -36,11 +36,12 @@ management:
   endpoints:
     web:
       exposure:
-        include: health,metrics,info
+        include: health,info,metrics,circuitbreakers
   endpoint:
     health:
       probes:
         enabled: true
+      show-details: always
 
 spring:
   application:
@@ -90,4 +91,3 @@ spring:
 
   lifecycle:
     timeout-per-shutdown-phase: 30s
-
